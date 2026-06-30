@@ -1,0 +1,33 @@
+# 작업 노트 (Claude/내부용) — 공개 레포에 포함하지 않음. ADR(docs/adr)은 커밋한다.
+CLAUDE.md
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / temp
+*.log
+*.tmp
+
+# Build output samples (생성된 엑셀 파일 등)
+/out/
+*.xlsx.tmp
