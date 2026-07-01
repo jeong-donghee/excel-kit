@@ -10,9 +10,9 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>excel-kit-report</artifactId>
-    <name>excel-kit-report</name>
-    <description>차트(line/bar)·표·이미지를 조합하는 리포트 빌더 (XSSF, 인메모리).</description>
+    <artifactId>excel-kit-grid</artifactId>
+    <name>excel-kit-grid</name>
+    <description>스프링 전용 정형 목록 엑셀 익스포트 — 어노테이션 기반, 대용량은 내부 SXSSF 스트리밍.</description>
 
     <dependencies>
         <dependency>

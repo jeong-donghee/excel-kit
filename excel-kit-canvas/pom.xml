@@ -10,9 +10,9 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>excel-kit-stream</artifactId>
-    <name>excel-kit-stream</name>
-    <description>API 응답 기반 대용량 목록 익스포트 (SXSSF, 스트리밍, 저메모리).</description>
+    <artifactId>excel-kit-canvas</artifactId>
+    <name>excel-kit-canvas</name>
+    <description>차트·이미지·도형·표 등 시각 컴포넌트를 시트에 쉽게 배치하는 모듈 (XSSF, 인메모리).</description>
 
     <dependencies>
         <dependency>
