@@ -76,7 +76,7 @@ ExcelDataExtractor apiResponseExtractor() {
     filename        = "sessions",
     sheetName       = "세션목록",                        // 분할 시 세션목록_1, 세션목록_2 …
     sheetNumbering  = SheetNumbering.SUFFIX_UNDERSCORE,  // 기본값 (SUFFIX_PAREN → "세션목록 (1)")
-    maxRowsPerSheet = 500_000,                           // 미지정 시 1,048,576 (엑셀 한도)
+    maxRowsPerSheet = 500_000,                           // 미지정 시 1,048,575 (엑셀 한도-헤더)
     maxSheets       = 10,                                // 미지정 시 무제한
     overflowPolicy  = OverflowPolicy.TRUNCATE            // 기본값
 )
@@ -106,7 +106,7 @@ public List<SessionRow> sessions() { return sessionService.findAll(); }
 | `sheetName` | 클래스명 기반 | 시트 베이스명 |
 | `sheetNumbering` | `SUFFIX_UNDERSCORE` | 분할 시트 번호 표기 방식 |
 | `rowNumberColumn` | 없음 | 지정 시 맨 앞에 행번호 컬럼(값=헤더 텍스트) |
-| `maxRowsPerSheet` | `1048576` | 시트당 최대 행 |
+| `maxRowsPerSheet` | `1048575` | 시트당 최대 데이터 행 (헤더 제외, 엑셀 한도 1,048,576 기준) |
 | `maxSheets` | 무제한 | 시트 수 상한(가드) |
 | `overflowPolicy` | `TRUNCATE` | 가드 초과 시 동작 (`TRUNCATE`/`FAIL`) |
 | `type` | 자동 추출 | 반환 타입에 제네릭이 없을 때만 원소 타입 명시 |
