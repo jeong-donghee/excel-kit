@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.jeong-donghee</groupId>
+        <artifactId>excel-kit</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>excel-kit-processor</artifactId>
+    <name>excel-kit-processor</name>
+    <description>JSR-269 애노테이션 프로세서 — @ExcelDownload/@ExcelColumn 사용을 컴파일 타임에 검증한다.</description>
+
+    <dependencies>
+        <!-- 프로세서 본체는 순수 JDK(javax.lang.model)만 사용. grid에 의존하지 않고 애노테이션은 FQN으로 매칭. -->
+
+        <!-- 테스트: 샘플 소스가 @ExcelDownload/@ExcelColumn을 참조하므로 grid를 클래스패스에 둔다 -->
+        <dependency>
+            <groupId>io.github.jeong-donghee</groupId>
+            <artifactId>excel-kit-grid</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 프로세서 모듈 자신을 컴파일할 때는 애노테이션 처리를 끈다(자기참조 방지) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <proc>none</proc>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
