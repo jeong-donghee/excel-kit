@@ -130,4 +130,38 @@ class GridExcelWriterTest {
             assertTrue(wb.getSheetAt(0).getRow(1) == null); // 데이터 없음
         }
     }
+
+    @Test
+    void exportsLargeDatasetWithoutRetainingRows() {
+        // 10만 행을 지연 생성(보관 X)으로 흘려도 OOM 없이 완료 — SXSSF 저메모리 회귀
+        int n = 100_000;
+        java.util.AbstractCollection<Product> rows = new java.util.AbstractCollection<>() {
+            @Override
+            public int size() {
+                return n;
+            }
+
+            @Override
+            public java.util.Iterator<Product> iterator() {
+                return new java.util.Iterator<>() {
+                    private int i = 0;
+
+                    @Override
+                    public boolean hasNext() {
+                        return i < n;
+                    }
+
+                    @Override
+                    public Product next() {
+                        i++;
+                        return new Product("p" + i, i, 1);
+                    }
+                };
+            }
+        };
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GridExcelWriter.write(rows, Product.class,
+                options(1_048_575, Integer.MAX_VALUE, OverflowPolicy.TRUNCATE), out);
+        assertTrue(out.size() > 0);
+    }
 }
