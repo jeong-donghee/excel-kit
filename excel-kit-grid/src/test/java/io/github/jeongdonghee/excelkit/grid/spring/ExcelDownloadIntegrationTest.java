@@ -21,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Controller;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,6 +56,20 @@ class ExcelDownloadIntegrationTest {
     }
 
     @Test
+    void exportsFromPlainControllerNotJustRestController() throws Exception {
+        MvcResult result = mvc.perform(get("/plain/excel"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String contentType = result.getResponse().getContentType();
+        assertTrue(contentType != null && contentType.contains("spreadsheetml.sheet"), contentType);
+
+        try (XSSFWorkbook wb = new XSSFWorkbook(new ByteArrayInputStream(result.getResponse().getContentAsByteArray()))) {
+            assertEquals("이름", wb.getSheetAt(0).getRow(0).getCell(0).getStringCellValue());
+        }
+    }
+
+    @Test
     void exportsCommonResponseWrapperViaExtractor() throws Exception {
         MvcResult result = mvc.perform(get("/wrapped/excel"))
                 .andExpect(status().isOk())
@@ -79,6 +94,21 @@ class ExcelDownloadIntegrationTest {
         @Bean
         ExcelDataExtractor apiResponseExtractor() {
             return ExcelDataExtractor.forType(ApiResponse.class, ApiResponse::getData);
+        }
+
+        @Bean
+        PlainController plainController() {
+            return new PlainController();
+        }
+    }
+
+    /** @ResponseBody 없는 일반 @Controller에서도 @ExcelDownload가 동작하는지 확인용. */
+    @Controller
+    static class PlainController {
+        @ExcelDownload(filename = "plain")
+        @GetMapping("/plain/excel")
+        public List<Product> plain() {
+            return List.of(new Product("펜", 1000, 3));
         }
     }
 
