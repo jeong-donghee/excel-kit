@@ -6,7 +6,7 @@
 
     <groupId>io.github.jeong-donghee</groupId>
     <artifactId>excel-kit</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
 
     <name>excel-kit</name>
@@ -26,7 +26,7 @@
         <developer>
             <id>jeong-donghee</id>
             <name>Donghee Jeong</name>
-            <email>dh.jeong@ex-em.com</email>
+            <email>weg9511@gmail.com</email>
             <url>https://jeong-donghee.github.io</url>
         </developer>
     </developers>
@@ -181,6 +181,13 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <!-- 비대화형 서명(무-passphrase 키/CI). pinentry·tty 없이 서명 -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
