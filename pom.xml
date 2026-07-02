@@ -43,6 +43,7 @@
         <module>excel-kit-canvas</module>
         <module>excel-kit-grid</module>
         <module>excel-kit-processor</module>
+        <module>excel-kit-examples</module>
     </modules>
 
     <properties>
