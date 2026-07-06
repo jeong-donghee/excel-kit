@@ -19,6 +19,14 @@ error: @ExcelDownload: 반환 타입에서 원소 타입을 정적으로 알 수
 
 `excel-kit-grid`를 쓰는 프로젝트에서 이 프로세서를 애노테이션 프로세서 경로에 추가한다.
 
+Gradle:
+
+```kotlin
+annotationProcessor("io.github.jeong-donghee:excel-kit-processor:0.1.0")
+```
+
+Maven:
+
 ```xml
 <plugin>
   <groupId>org.apache.maven.plugins</groupId>

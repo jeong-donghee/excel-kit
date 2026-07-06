@@ -8,6 +8,29 @@
 - **요구사항**: Java 17+, Spring Boot 3 (Spring 6, `jakarta.servlet`)
 - 컨트롤러는 `List<T>`(또는 공통 응답 래퍼)를 반환하고, `@ExcelDownload`만 붙이면 끝.
 
+## 설치
+
+Maven:
+
+```xml
+<dependency>
+    <groupId>io.github.jeong-donghee</groupId>
+    <artifactId>excel-kit-grid</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+Gradle:
+
+```kotlin
+implementation("io.github.jeong-donghee:excel-kit-grid:0.1.0")
+// (선택) @ExcelDownload/@ExcelColumn 오용을 컴파일 타임에 잡는 프로세서
+annotationProcessor("io.github.jeong-donghee:excel-kit-processor:0.1.0")
+```
+
+> Maven에서 컴파일 타임 검증을 켜려면 `maven-compiler-plugin`의 `annotationProcessorPaths`에
+> `excel-kit-processor`를 추가한다 ([excel-kit-processor](../excel-kit-processor) 참고).
+
 ## 빠른 시작
 
 ```java

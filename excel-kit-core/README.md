@@ -4,6 +4,23 @@
 
 `excel-kit`의 공통 기반 모듈. 다른 모듈이 공유하는 저수준 유틸을 제공한다.
 
+## 설치
+
+보통 [`excel-kit-grid`](../excel-kit-grid) 등을 통해 전이 의존되므로 직접 넣을 일은 드물다. 필요하면:
+
+```kotlin
+implementation("io.github.jeong-donghee:excel-kit-core:0.1.0")
+```
+```xml
+<dependency>
+    <groupId>io.github.jeong-donghee</groupId>
+    <artifactId>excel-kit-core</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+## 제공 클래스
+
 | 클래스 | 역할 |
 |--------|------|
 | `Workbooks` | XSSF(인메모리) / SXSSF(스트리밍) 워크북 팩토리 |
