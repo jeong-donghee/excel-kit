@@ -12,12 +12,7 @@
 
     <artifactId>excel-kit-canvas</artifactId>
     <name>excel-kit-canvas</name>
-    <description>차트·이미지·도형·표 등 시각 컴포넌트를 시트에 쉽게 배치하는 모듈 (XSSF, 인메모리).</description>
-
-    <properties>
-        <!-- 아직 구현 전(빈 모듈)이라 발행 제외. 첫 구현 후 제거. -->
-        <maven.deploy.skip>true</maven.deploy.skip>
-    </properties>
+    <description>어노테이션 기반 2D 차트 익스포트 — 데이터 클래스에 @ExcelChart를 붙이고 리스트만 넘기면 차트 생성 (XSSF, 인메모리).</description>
 
     <dependencies>
         <dependency>
