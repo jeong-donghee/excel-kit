@@ -37,6 +37,7 @@ import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTDPt;
 
 /**
  * 어노테이션이 붙은 데이터 클래스의 리스트를 넘기면 차트를 그려 .xlsx로 내보내는 진입점.
@@ -184,6 +185,10 @@ public final class ExcelCanvas {
             i++;
         }
         chart.plot(data);
+        // 단일 시리즈 막대 + @ChartColor → 막대별 색
+        if (def.colorField != null && def.type == ChartType.BAR && def.series.size() == 1) {
+            applyPointColors(chart, def.type, pointColors(def.colorField, rows));
+        }
         dataCol++; // 다음 차트와의 간격
     }
 
@@ -205,6 +210,9 @@ public final class ExcelCanvas {
         XDDFChartData.Series series = data.addSeries(cats, vals);
         series.setTitle(sf.name, null);
         chart.plot(data);
+        if (def.colorField != null) {
+            applyPointColors(chart, def.type, pointColors(def.colorField, rows));
+        }
         dataCol++;
     }
 
@@ -284,6 +292,56 @@ public final class ExcelCanvas {
         return Palette.rgb(Palette.at(index));
     }
 
+    /** {@code @ChartColor} 필드에서 요소별 색을 읽는다. 값이 비면 그 자리엔 팔레트 색. */
+    private List<byte[]> pointColors(Field colorField, List<?> rows) {
+        List<byte[]> out = new ArrayList<>(rows.size());
+        for (int r = 0; r < rows.size(); r++) {
+            Object v = read(colorField, rows.get(r));
+            String hex = v == null ? null : String.valueOf(v);
+            out.add(hex != null && !hex.isBlank() ? Palette.rgb(hex) : Palette.rgb(Palette.at(r)));
+        }
+        return out;
+    }
+
+    /** 데이터 포인트별 색(dPt)을 저수준 CT에 적용. PIE/DOUGHNUT의 슬라이스, 단일 시리즈 BAR의 막대. */
+    private static void applyPointColors(XSSFChart chart, ChartType type, List<byte[]> colors) {
+        var plotArea = chart.getCTChart().getPlotArea();
+        switch (type) {
+            case PIE -> {
+                if (plotArea.sizeOfPieChartArray() > 0 && plotArea.getPieChartArray(0).sizeOfSerArray() > 0) {
+                    var ser = plotArea.getPieChartArray(0).getSerArray(0);
+                    for (int i = 0; i < colors.size(); i++) {
+                        dpt(ser.addNewDPt(), i, colors.get(i));
+                    }
+                }
+            }
+            case DOUGHNUT -> {
+                if (plotArea.sizeOfDoughnutChartArray() > 0 && plotArea.getDoughnutChartArray(0).sizeOfSerArray() > 0) {
+                    var ser = plotArea.getDoughnutChartArray(0).getSerArray(0);
+                    for (int i = 0; i < colors.size(); i++) {
+                        dpt(ser.addNewDPt(), i, colors.get(i));
+                    }
+                }
+            }
+            case BAR -> {
+                if (plotArea.sizeOfBarChartArray() > 0 && plotArea.getBarChartArray(0).sizeOfSerArray() > 0) {
+                    var ser = plotArea.getBarChartArray(0).getSerArray(0);
+                    for (int i = 0; i < colors.size(); i++) {
+                        dpt(ser.addNewDPt(), i, colors.get(i));
+                    }
+                }
+            }
+            default -> {
+                // per-point 색 미지원 타입(LINE/AREA/RADAR/SCATTER)은 무시
+            }
+        }
+    }
+
+    private static void dpt(CTDPt d, int idx, byte[] rgb) {
+        d.addNewIdx().setVal(idx);
+        d.addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(rgb);
+    }
+
     private static ChartTypes chartTypes(ChartType type) {
         return switch (type) {
             case BAR -> ChartTypes.BAR;
@@ -349,6 +407,7 @@ public final class ExcelCanvas {
         }
         Field category = null;
         Field x = null;
+        Field colorField = null;
         List<SeriesField> series = new ArrayList<>();
         List<SeriesField> ys = new ArrayList<>();
         for (Class<?> c = type; c != null && c != Object.class; c = c.getSuperclass()) {
@@ -367,6 +426,13 @@ public final class ExcelCanvas {
                     f.setAccessible(true);
                     ChartY y = f.getAnnotation(ChartY.class);
                     ys.add(new SeriesField(y.name().isBlank() ? f.getName() : y.name(), f));
+                } else if (f.isAnnotationPresent(ChartColor.class)) {
+                    f.setAccessible(true);
+                    if (f.getType() != String.class) {
+                        throw new ExcelKitException(type.getName()
+                                + ": @ChartColor 필드는 String(hex, 예 \"#4E79A7\")이어야 합니다: " + f.getName());
+                    }
+                    colorField = f;
                 }
             }
         }
@@ -384,13 +450,13 @@ public final class ExcelCanvas {
                 throw new ExcelKitException(type.getName() + ": " + t + " 차트는 @ChartSeries가 정확히 1개여야 합니다(현재 " + series.size() + "개).");
             }
         }
-        return new ChartDef(t, ann, category, series, x, ys);
+        return new ChartDef(t, ann, category, series, x, ys, colorField);
     }
 
     private record SeriesField(String name, Field field) {
     }
 
     private record ChartDef(ChartType type, ExcelChart ann, Field category,
-                            List<SeriesField> series, Field x, List<SeriesField> ys) {
+                            List<SeriesField> series, Field x, List<SeriesField> ys, Field colorField) {
     }
 }

@@ -1,5 +1,6 @@
 package io.github.jeongdonghee.excelkit.canvas;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -68,8 +69,33 @@ class ExcelCanvasTest {
         Sc(double x, double y) { this.x = x; this.y = y; }
     }
 
+    // ── @ChartColor (요소별 색) DTO ──
+    @ExcelChart(type = ChartType.PIE, title = "색 파이")
+    static class ColorPie {
+        @ChartCategory String name;
+        @ChartSeries int value;
+        @ChartColor String color;
+        ColorPie(String n, int v, String c) { name = n; value = v; color = c; }
+    }
+
+    @ExcelChart(type = ChartType.BAR, title = "색 막대")
+    static class ColorBar {
+        @ChartCategory String name;
+        @ChartSeries int value;
+        @ChartColor String color;
+        ColorBar(String n, int v, String c) { name = n; value = v; color = c; }
+    }
+
     // ── 잘못된 DTO ──
     static class NoAnn { }
+
+    @ExcelChart(type = ChartType.PIE)
+    static class BadColorType {
+        @ChartCategory String name;
+        @ChartSeries int value;
+        @ChartColor int color;   // String이어야 함
+        BadColorType() { }
+    }
 
     @ExcelChart(type = ChartType.SCATTER)
     static class BadScatter {
@@ -159,6 +185,40 @@ class ExcelCanvasTest {
         try (XSSFWorkbook wb = reload(out.toByteArray())) {
             assertEquals(1, chartCount(wb));
         }
+    }
+
+    @Test
+    void pieWithChartColorSetsPerSliceColors() throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ExcelCanvas.create()
+                .chart(List.of(new ColorPie("A", 30, "#FF0000"), new ColorPie("B", 70, "#00FF00")))
+                .writeTo(out);
+        try (XSSFWorkbook wb = reload(out.toByteArray())) {
+            var ser = wb.getSheet("Charts").getDrawingPatriarch().getCharts().get(0)
+                    .getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0);
+            assertEquals(2, ser.sizeOfDPtArray(), "슬라이스마다 dPt가 있어야 한다");
+            byte[] first = ser.getDPtArray(0).getSpPr().getSolidFill().getSrgbClr().getVal();
+            assertArrayEquals(new byte[] {(byte) 0xFF, 0, 0}, first, "첫 슬라이스는 지정한 빨강");
+        }
+    }
+
+    @Test
+    void singleSeriesBarWithChartColorSetsPerBarColors() throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ExcelCanvas.create()
+                .chart(List.of(new ColorBar("A", 10, "#112233"), new ColorBar("B", 20, "")))  // 빈 값 → 팔레트 폴백
+                .writeTo(out);
+        try (XSSFWorkbook wb = reload(out.toByteArray())) {
+            var ser = wb.getSheet("Charts").getDrawingPatriarch().getCharts().get(0)
+                    .getCTChart().getPlotArea().getBarChartArray(0).getSerArray(0);
+            assertEquals(2, ser.sizeOfDPtArray(), "막대마다 dPt가 있어야 한다");
+            assertArrayEquals(new byte[] {0x11, 0x22, 0x33}, ser.getDPtArray(0).getSpPr().getSolidFill().getSrgbClr().getVal());
+        }
+    }
+
+    @Test
+    void nonStringChartColorThrows() {
+        assertThrows(ExcelKitException.class, () -> ExcelCanvas.create().chart(List.of(new BadColorType())));
     }
 
     @Test

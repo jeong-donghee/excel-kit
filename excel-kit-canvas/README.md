@@ -36,11 +36,12 @@ class Sales {
     @ChartSeries(name = "비용") int cost;   // 색은 팔레트 자동 (표현 계층 관심사)
 }
 
-// 파이형 (pie/doughnut) — 시리즈 1개
+// 파이형 (pie/doughnut) — 시리즈 1개, 슬라이스별 색은 @ChartColor(데이터)로
 @ExcelChart(type = ChartType.PIE, title = "구성비")
 class Share {
     @ChartCategory String name;
     @ChartSeries int value;
+    @ChartColor String color;   // 예 "#4E79A7". 값이 비면 팔레트 자동
 }
 
 // XY형 (scatter)
@@ -60,6 +61,7 @@ ExcelCanvas.create()
 
 - **자동/자유 배치**: 위치를 안 주면 위에서 아래로 자동 배치. `@ExcelChart(col=0, row=0, width=8, height=15)`로 자유 배치.
 - **빈 리스트**: 원소 타입을 알 수 없으므로 `canvas.chart(Sales.class, emptyList)` 오버로드를 쓴다.
+- **색**: 지정 안 하면 기본 팔레트가 자동 배정(시리즈/슬라이스마다 다른 색). **요소별 색**이 필요하면 `@ChartColor` 필드(hex 문자열)로 — 색이 데이터로 들어온다(사용자가 고른 색 등). 파이·도넛 슬라이스, 단일 시리즈 막대에 적용.
 - **검증**: `chart()` 호출 시 `@ExcelChart` 유무와 타입별 필수 필드(카테고리+시리즈, 파이는 시리즈 1개, 스캐터는 X+Y)를 검사해 어긋나면 예외.
 
 ## 애노테이션
@@ -71,6 +73,7 @@ ExcelCanvas.create()
 | `@ChartSeries(name)` | 필드 | 값 시리즈 (카테고리형·파이형; 파이는 1개). 색은 팔레트 자동 |
 | `@ChartX` | 필드 | 분산형 X 값 |
 | `@ChartY(name)` | 필드 | 분산형 Y 시리즈 |
+| `@ChartColor` | 필드 | 요소별 색(hex 문자열). 파이·도넛 슬라이스, 단일 시리즈 막대. 없으면 팔레트 자동 |
 
 ## 라이선스
 
