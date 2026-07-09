@@ -6,7 +6,7 @@
 
     <groupId>io.github.jeong-donghee</groupId>
     <artifactId>excel-kit</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>excel-kit</name>
