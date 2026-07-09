@@ -10,8 +10,6 @@
 
 ## 설치
 
-> 아직 미발행 — `0.2.0` 릴리스 예정.
-
 ```kotlin
 // Gradle
 implementation("io.github.jeong-donghee:excel-kit-canvas:0.2.0")

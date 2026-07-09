@@ -16,16 +16,16 @@ Maven:
 <dependency>
     <groupId>io.github.jeong-donghee</groupId>
     <artifactId>excel-kit-grid</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
 Gradle:
 
 ```kotlin
-implementation("io.github.jeong-donghee:excel-kit-grid:0.1.0")
+implementation("io.github.jeong-donghee:excel-kit-grid:0.2.0")
 // (선택) @ExcelDownload/@ExcelColumn 오용을 컴파일 타임에 잡는 프로세서
-annotationProcessor("io.github.jeong-donghee:excel-kit-processor:0.1.0")
+annotationProcessor("io.github.jeong-donghee:excel-kit-processor:0.2.0")
 ```
 
 > Maven에서 컴파일 타임 검증을 켜려면 `maven-compiler-plugin`의 `annotationProcessorPaths`에

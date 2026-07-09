@@ -22,7 +22,7 @@ error: @ExcelDownload: 반환 타입에서 원소 타입을 정적으로 알 수
 Gradle:
 
 ```kotlin
-annotationProcessor("io.github.jeong-donghee:excel-kit-processor:0.1.0")
+annotationProcessor("io.github.jeong-donghee:excel-kit-processor:0.2.0")
 ```
 
 Maven:
@@ -36,7 +36,7 @@ Maven:
       <path>
         <groupId>io.github.jeong-donghee</groupId>
         <artifactId>excel-kit-processor</artifactId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
       </path>
     </annotationProcessorPaths>
   </configuration>

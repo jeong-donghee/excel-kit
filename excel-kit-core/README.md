@@ -9,13 +9,13 @@
 보통 [`excel-kit-grid`](../excel-kit-grid) 등을 통해 전이 의존되므로 직접 넣을 일은 드물다. 필요하면:
 
 ```kotlin
-implementation("io.github.jeong-donghee:excel-kit-core:0.1.0")
+implementation("io.github.jeong-donghee:excel-kit-core:0.2.0")
 ```
 ```xml
 <dependency>
     <groupId>io.github.jeong-donghee</groupId>
     <artifactId>excel-kit-core</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
