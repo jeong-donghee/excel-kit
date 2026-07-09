@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.jeong-donghee</groupId>
         <artifactId>excel-kit</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>0.2.0</version>
     </parent>
 
     <artifactId>excel-kit-processor</artifactId>
